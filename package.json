@@ -1,0 +1,17 @@
+{
+  "name": "wallet-autopsy",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Don't trust an address. Investigate it.",
+  "scripts": {
+    "dev": "concurrently --kill-others-on-fail --names client,server \"npm run dev:client\" \"npm run dev:server\"",
+    "dev:client": "npm run dev --prefix client",
+    "dev:server": "npm run dev --prefix server",
+    "build": "npm run build --prefix client",
+    "preview": "npm run preview --prefix client",
+    "test:server": "npm test --prefix server"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.2"
+  }
+}
