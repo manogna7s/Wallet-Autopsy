@@ -26,12 +26,6 @@ export function toneFor(severity) {
   return severity || 'info'
 }
 
-function eventTime(row) {
-  if (!row?.timestamp && !row?.at) return null
-  const value = Date.parse(row.timestamp || row.at)
-  return Number.isFinite(value) ? value : null
-}
-
 function later(a, b) {
   if (a && !b) return a
   if (b && !a) return b
@@ -107,7 +101,7 @@ function classifyType(address, stats, listing) {
   return 'counterparty'
 }
 
-function riskLabel(listing, stats) {
+function riskLabel(listing, _stats) {
   if (listing?.flagged) return listing.label || 'Listed'
   if (listing?.approval) return 'Approval exposure'
   if (listing?.behavioral) return 'Behavioral anomaly'
@@ -558,8 +552,11 @@ export function buildRiskPath({ subject, signals, graph }) {
     })
   }
 
-    const spender = pushSignal(approval, 'Engine signal')
-    if (spender) pushAddress(spender, 'Spender')
+  const approval = signals.find(
+    (signal) => signal.type === 'unlimited_token_approval' || signal.type === 'permission_exposure_risk',
+  )
+  const spender = pushSignal(approval, 'Engine signal')
+  if (spender) pushAddress(spender, 'Spender')
 
     const repeated = signals.find((signal) => signal.type === 'repeated_risky_interaction')
     const flagged =

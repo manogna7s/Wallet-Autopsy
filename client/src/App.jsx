@@ -16,6 +16,7 @@ export default function App() {
         <Route path="/investigate/:address" element={<InvestigationPage />} />
         <Route path="/watchlist" element={<WatchlistPage />} />
         <Route path="/history" element={<HistoryPage />} />
+        <Route path="/history/:id" element={<InvestigationPage />} />
         <Route path="*" element={<NotFoundPage />} />
       </Route>
     </Routes>

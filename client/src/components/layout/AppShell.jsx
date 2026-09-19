@@ -38,22 +38,22 @@ export function AppShell() {
     <div className="flex min-h-screen flex-col">
       <a
         href="#main"
-        className="absolute left-4 top-4 z-50 -translate-y-16 bg-accent px-3 py-2 text-sm text-accent-ink focus:translate-y-0"
+        className="absolute left-4 top-4 z-50 -translate-y-16 bg-accent px-3 py-2 text-sm text-accent-ink focus:translate-y-0 focus-visible:translate-y-0"
       >
         Skip to content
       </a>
 
-      <header className="sticky top-0 z-30 border-b border-line bg-canvas">
+      <header className="sticky top-0 z-30 border-b border-line bg-canvas/95 backdrop-blur-sm">
         <div className="mx-auto flex max-w-6xl items-center gap-4 px-5 py-3.5 md:px-8">
           <Link to="/" className="shrink-0 hover:opacity-80" aria-label="Wallet Autopsy home">
             <Wordmark />
           </Link>
 
-          <nav className="hidden md:block" aria-label="Primary">
+          <nav className="hidden lg:block" aria-label="Primary">
             <NavLinks />
           </nav>
 
-          <div className="ml-auto hidden items-center gap-3 md:flex">
+          <div className="ml-auto hidden items-center gap-3 lg:flex">
             <label className="sr-only" htmlFor="network-select">
               Network
             </label>
@@ -61,7 +61,7 @@ export function AppShell() {
               id="network-select"
               value={network.id}
               onChange={(event) => setNetworkId(event.target.value)}
-              className="border border-line bg-canvas px-2 py-1.5 text-[12px] text-quiet"
+              className="border border-line bg-canvas px-2 py-1.5 text-[12px] text-quiet transition hover:border-faint"
             >
               {networks.map((item) => (
                 <option key={item.id} value={item.id} disabled={!item.enabled}>
@@ -78,16 +78,17 @@ export function AppShell() {
                 name="q"
                 type="search"
                 placeholder="Search address  /"
-                className="w-52 border border-line bg-inset py-1.5 pl-8 pr-3 text-[12px] text-ink placeholder:text-faint"
+                className="w-52 border border-line bg-inset py-1.5 pl-8 pr-3 text-[12px] text-ink placeholder:text-faint transition hover:border-faint"
                 autoComplete="off"
                 spellCheck="false"
+                aria-label="Search address"
               />
             </form>
 
             <StatusPill />
           </div>
 
-          <div className="ml-auto md:hidden">
+          <div className="ml-auto lg:hidden">
             <Button
               variant="ghost"
               className="px-3 py-2"
@@ -101,13 +102,30 @@ export function AppShell() {
         </div>
 
         {open ? (
-          <div id="mobile-nav" className="border-t border-line px-5 py-4 md:hidden">
+          <div id="mobile-nav" className="border-t border-line px-5 py-4 lg:hidden">
             <NavLinks onNavigate={() => setOpen(false)} />
-            <form onSubmit={onNavSearch} className="mt-4">
+            <label className="sr-only" htmlFor="network-select-mobile">
+              Network
+            </label>
+            <select
+              id="network-select-mobile"
+              value={network.id}
+              onChange={(event) => setNetworkId(event.target.value)}
+              className="mt-4 w-full border border-line bg-canvas px-3 py-2 text-sm text-quiet"
+            >
+              {networks.map((item) => (
+                <option key={item.id} value={item.id} disabled={!item.enabled}>
+                  {item.label}
+                  {item.enabled ? '' : ' · soon'}
+                </option>
+              ))}
+            </select>
+            <form onSubmit={onNavSearch} className="mt-3">
               <input
                 name="q"
                 type="search"
                 placeholder="Paste a wallet or contract address"
+                aria-label="Search address"
                 className="w-full border border-line bg-inset px-3 py-2 text-sm"
               />
             </form>
@@ -117,7 +135,7 @@ export function AppShell() {
 
       <div className="border-b border-line bg-inset/60">
         <p className="mx-auto max-w-6xl px-5 py-1.5 text-[11px] tracking-wide text-quiet md:px-8">
-          Ethereum Mainnet via Alchemy · Wallet Autopsy Risk Model is deterministic · Gemini does not score risk
+          Ethereum Mainnet via Alchemy · Wallet Autopsy Risk Model · not an industry standard · Gemini explains verified findings
         </p>
       </div>
 

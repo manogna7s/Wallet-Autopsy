@@ -1,7 +1,8 @@
-import { shorten } from '../../data/mock'
-import { cn, formatNumber } from '../../lib/format'
+import { formatNumber } from '../../lib/format'
+import { HexInspect } from './NodePanel'
+import { addressExplorerUrl } from '../../lib/explorer'
 
-export function RiskPath({ path, summary }) {
+export function RiskPath({ path, summary, chain = 'ethereum' }) {
   const steps = path?.steps || []
   const empty = !path || path.empty || steps.length < 2
 
@@ -22,23 +23,24 @@ export function RiskPath({ path, summary }) {
       {empty ? (
         <p className="mt-6 text-sm text-quiet">No chained relationship in this window.</p>
       ) : (
-        <ol className="mt-8 flex flex-wrap items-stretch gap-2">
+        <ol className="mt-8 flex flex-wrap items-center gap-x-4 gap-y-3 border-y border-line py-5">
           {steps.map((step, index) => (
-            <li key={step.id} className="flex items-stretch gap-2">
-              <div
-                className={cn(
-                  'min-w-[148px] border bg-raised px-4 py-3',
-                  step.kind === 'flagged' ? 'border-critical/40' : 'border-line',
-                )}
-              >
+            <li key={step.id} className="flex items-center gap-4">
+              <div>
                 <p className="wa-kicker">{step.kicker}</p>
                 <p className="mt-1 text-sm">{step.label}</p>
                 {step.address ? (
-                  <p className="wa-mono mt-1 text-[11px] text-faint">{shorten(step.address, 4)}</p>
+                  <p className="mt-1">
+                    <HexInspect
+                      value={step.address}
+                      href={addressExplorerUrl(chain, step.address)}
+                      chars={4}
+                    />
+                  </p>
                 ) : null}
               </div>
               {index < steps.length - 1 ? (
-                <span className="flex items-center text-[11px] tracking-[0.18em] text-scan uppercase">
+                <span className="text-[11px] tracking-[0.18em] text-scan uppercase" aria-hidden="true">
                   →
                 </span>
               ) : null}

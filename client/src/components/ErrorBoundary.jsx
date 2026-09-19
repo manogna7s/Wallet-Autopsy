@@ -15,9 +15,11 @@ export class ErrorBoundary extends Component {
     if (this.state.error) {
       return (
         <div className="mx-auto max-w-lg px-6 py-24">
-          <p className="wa-kicker text-critical">Client error</p>
+          <p className="wa-kicker text-critical">Interface error</p>
           <h1 className="wa-display mt-3 text-4xl">This screen failed to render.</h1>
-          <p className="mt-4 text-sm text-quiet">{this.state.error.message}</p>
+          <p className="mt-4 text-sm text-quiet">
+            Deterministic findings on the server are unchanged. Reload to return to the investigation.
+          </p>
           <Button className="mt-8" onClick={() => window.location.reload()}>
             Reload
           </Button>

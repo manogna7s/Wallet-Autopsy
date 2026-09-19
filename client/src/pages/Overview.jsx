@@ -1,3 +1,4 @@
+import { INVESTIGATION_STAGES } from '../lib/stages'
 import { Link } from 'react-router-dom'
 import { Button } from '../components/ui/Button'
 import { AddressSearch } from '../components/search/AddressSearch'
@@ -5,13 +6,7 @@ import { HeroGraph } from '../components/landing/HeroGraph'
 import { DEMO_ADDRESS } from '../data/mock'
 import { DataBadge } from '../components/ui/Badge'
 
-const STEPS = [
-  { n: '01', label: 'Address' },
-  { n: '02', label: 'Ledger' },
-  { n: '03', label: 'Signals' },
-  { n: '04', label: 'Graph' },
-  { n: '05', label: 'Evidence' },
-]
+const STEPS = INVESTIGATION_STAGES
 
 export function OverviewPage() {
   return (
@@ -45,12 +40,12 @@ export function OverviewPage() {
       <section className="border-y border-line">
         <div className="mx-auto max-w-6xl px-5 py-10 md:px-8">
           <p className="wa-kicker mb-8">How an investigation moves</p>
-          <ol className="grid grid-cols-2 gap-6 sm:grid-cols-3 lg:grid-cols-5">
+          <ol className="grid grid-cols-2 gap-5 sm:grid-cols-4 xl:grid-cols-8">
             {STEPS.map((step, index) => (
-              <li key={step.n}>
+              <li key={step.id}>
                 <p className="text-[10px] tracking-[0.18em] text-faint uppercase">
-                  {step.n}
-                  {index < STEPS.length - 1 ? ' →' : ''}
+                  {String(index + 1).padStart(2, '0')}
+                  {index < STEPS.length - 1 ? ' ↓' : ''}
                 </p>
                 <p className="mt-2 text-sm text-quiet">{step.label}</p>
               </li>

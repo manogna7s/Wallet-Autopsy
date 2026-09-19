@@ -27,6 +27,12 @@ function cacheKey(chain, address) {
   return `${chain}:${address}`
 }
 
+export function rememberInvestigation(payload) {
+  if (!payload?.address || !payload?.chain) return
+  const stored = { ...payload, cached: false }
+  cache.set(cacheKey(payload.chain, payload.address), stored)
+}
+
 async function fetchTransferPage({ address, direction, pageKey }) {
   const params = {
     fromBlock: '0x0',

@@ -11,9 +11,9 @@ export function EmptyState({ kicker = 'Empty', title, body, action }) {
   )
 }
 
-export function ErrorState({ title = 'Investigation failed', body, onRetry }) {
+export function ErrorState({ title = 'Unable to retrieve blockchain activity.', body, onRetry }) {
   return (
-    <div className="border border-critical/30 bg-critical/5 px-6 py-10">
+    <div className="border-y border-line py-10" role="alert">
       <p className="wa-kicker text-critical">Error</p>
       <h2 className="wa-display mt-2 text-3xl">{title}</h2>
       {body ? <p className="mt-3 max-w-lg text-sm text-quiet">{body}</p> : null}

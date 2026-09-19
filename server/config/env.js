@@ -20,4 +20,16 @@ export const env = {
   alchemyTimeoutMs: number('ALCHEMY_TIMEOUT_MS', 18000),
   cacheTtlMs: number('ACTIVITY_CACHE_TTL_MS', 5 * 60 * 1000),
   maxTransfers: number('ACTIVITY_MAX_TRANSFERS', 200),
+  get geminiKey() {
+    return process.env.GEMINI_API_KEY || ''
+  },
+  get geminiModel() {
+    return process.env.GEMINI_MODEL || 'gemini-3.6-flash'
+  },
+  get geminiTimeoutMs() {
+    return number('GEMINI_TIMEOUT_MS', 12000)
+  },
+  get mongoUri() {
+    return process.env.MONGODB_URI || process.env.DATABASE_URL || ''
+  },
 }

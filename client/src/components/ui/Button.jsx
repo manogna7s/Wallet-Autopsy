@@ -20,7 +20,7 @@ export function Button({
     <As
       type={computedType}
       className={cn(
-        'inline-flex items-center justify-center gap-2 rounded-sm px-4 py-2 text-[13px] font-medium tracking-tight transition duration-150 disabled:cursor-not-allowed disabled:opacity-40',
+        'inline-flex items-center justify-center gap-2 rounded-none px-4 py-2 text-[13px] font-medium tracking-tight transition duration-150 disabled:cursor-not-allowed disabled:opacity-40',
         variants[variant],
         className,
       )}

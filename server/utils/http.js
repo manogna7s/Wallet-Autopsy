@@ -11,6 +11,8 @@ export function sanitizeProviderMessage(message) {
   return String(message || 'Provider error')
     .replace(/\/v2\/[A-Za-z0-9_-]+/g, '/v2/***')
     .replace(/alchemy\.com\/[^\s]+/gi, 'alchemy.com/***')
+    .replace(/[?&]key=[A-Za-z0-9_-]+/gi, 'key=***')
+    .replace(/AIza[A-Za-z0-9_-]+/g, 'AIza***')
 }
 
 export function asyncHandler(fn) {

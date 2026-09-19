@@ -68,12 +68,20 @@ function GraphNode({ data, selected }) {
       role="button"
       tabIndex={0}
       aria-label={`${data.typeLabel} ${data.display}`}
+      aria-pressed={selected}
+      onKeyDown={(event) => {
+        if (event.key === 'Enter' || event.key === ' ') {
+          event.preventDefault()
+          data.onActivate?.()
+        }
+      }}
       className={cn(
-        'min-w-[148px] cursor-pointer border bg-raised px-3 py-2',
-        selected ? 'border-scan' : 'border-line',
+        'min-w-[132px] cursor-pointer border bg-raised px-3 py-2 transition sm:min-w-[148px]',
+        selected ? 'border-scan' : 'border-line hover:border-faint',
         data.highlight && data.type === 'flagged' && 'wa-glow-critical',
         data.highlight && data.type !== 'flagged' && 'wa-glow',
         data.isSubject && !data.highlight && 'wa-glow',
+        data.isSubject && 'wa-node-drift',
       )}
     >
       <Handle type="target" position={Position.Top} className="!h-1.5 !w-1.5 !border-0 !bg-faint" />
@@ -149,7 +157,7 @@ export function RelationshipGraph({ graph, chain }) {
         type: 'autopsy',
         position: node.position,
         selected: selected?.id === node.id,
-        data: node,
+        data: { ...node, onActivate: () => setSelected(node) },
       })),
     [laidOut, selected],
   )
@@ -158,7 +166,7 @@ export function RelationshipGraph({ graph, chain }) {
     () =>
       visible.edges.map((edge) => {
         const highlighted = edge.riskRelevant
-        const color = highlighted ? '#6e9a94' : '#5b5853'
+        const color = highlighted ? '#6d9a93' : '#6f6a62'
         return {
           id: edge.id,
           source: edge.source,
@@ -168,7 +176,7 @@ export function RelationshipGraph({ graph, chain }) {
           animated: highlighted,
           markerEnd: { type: MarkerType.ArrowClosed, width: 12, height: 12, color },
           style: { stroke: color, strokeWidth: highlighted ? 1.6 : 1 },
-          labelStyle: { fill: highlighted ? '#9aaf9a' : '#8d8982', fontSize: 10, fontFamily: 'IBM Plex Sans' },
+          labelStyle: { fill: highlighted ? '#9aaf9a' : '#9a958a', fontSize: 10, fontFamily: 'IBM Plex Sans' },
           labelBgStyle: { fill: '#060708' },
           labelBgPadding: [4, 6],
         }
@@ -181,7 +189,10 @@ export function RelationshipGraph({ graph, chain }) {
   return (
     <section>
       <div className="flex flex-wrap items-end justify-between gap-4">
-        <h2 className="wa-display text-3xl">Map</h2>
+        <div>
+          <p className="wa-kicker">Relationship graph</p>
+          <h2 className="wa-display mt-2 text-3xl">Map</h2>
+        </div>
         <p className="text-[12px] text-quiet">
           {Math.max(0, visible.nodes.length - 1)}/{graph.totalCounterparties}
         </p>
@@ -193,9 +204,10 @@ export function RelationshipGraph({ graph, chain }) {
             key={item.id}
             type="button"
             onClick={() => setFilter(item.id)}
+            aria-pressed={filter === item.id}
             className={cn(
-              'border px-3 py-1.5 text-[11px] tracking-[0.14em] uppercase',
-              filter === item.id ? 'border-accent text-ink' : 'border-line text-quiet hover:text-ink',
+              'border px-3 py-1.5 text-[11px] tracking-[0.14em] uppercase transition',
+              filter === item.id ? 'border-accent text-ink' : 'border-line text-quiet hover:border-faint hover:text-ink',
             )}
           >
             {item.label}
@@ -212,7 +224,7 @@ export function RelationshipGraph({ graph, chain }) {
         </label>
       </div>
 
-      <div className="relative mt-5 h-[520px] border border-line bg-canvas">
+      <div className="relative mt-5 h-[360px] border-y border-line bg-canvas sm:h-[440px] lg:h-[520px]">
         {emptyRisk ? (
           <div className="flex h-full items-center justify-center px-6 text-center">
             <p className="text-sm text-quiet">No risk links. Turn off Risk only.</p>

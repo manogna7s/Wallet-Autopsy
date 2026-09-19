@@ -1,6 +1,5 @@
 import { useAnimatedNumber } from '../../hooks/useAnimatedNumber'
 import { riskTone } from '../../lib/format'
-import { cn } from '../../lib/format'
 
 export function RiskDial({ score, band, summary }) {
   const shown = useAnimatedNumber(score)
@@ -13,12 +12,14 @@ export function RiskDial({ score, band, summary }) {
   return (
     <div className="flex flex-col items-center text-center">
       <div
-        className={cn(
-          'relative flex h-[220px] w-[220px] items-center justify-center rounded-full',
-          tone === 'critical' || tone === 'high' ? 'wa-glow-risk' : 'wa-glow',
-        )}
+        role="meter"
+        aria-label="Wallet Autopsy Risk Model score"
+        aria-valuemin={0}
+        aria-valuemax={100}
+        aria-valuenow={display}
+        className="relative flex h-[200px] w-[200px] items-center justify-center sm:h-[220px] sm:w-[220px]"
       >
-        <svg viewBox="0 0 180 180" className="h-[220px] w-[220px] -rotate-90" aria-hidden="true">
+        <svg viewBox="0 0 180 180" className="h-full w-full -rotate-90" aria-hidden="true">
           <circle cx="90" cy="90" r={radius} fill="none" stroke="var(--wa-inset)" strokeWidth="6" />
           <circle
             cx="90"
@@ -35,7 +36,9 @@ export function RiskDial({ score, band, summary }) {
         </svg>
         <div className="absolute inset-0 flex flex-col items-center justify-center">
           <span className="wa-display text-6xl leading-none tabular-nums">{display}</span>
-          <span className="wa-kicker mt-2">Risk</span>
+          <span className="wa-kicker mt-2" style={{ color: `var(--wa-${tone})` }}>
+            Risk
+          </span>
         </div>
       </div>
       <p className="mt-5 text-sm text-quiet">{band}</p>

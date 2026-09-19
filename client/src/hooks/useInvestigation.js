@@ -14,10 +14,12 @@ export function useInvestigation(address) {
       return undefined
     }
     if (!isAddress(address)) {
+      const invalid = new Error('Enter a valid 42-character EVM address (0x…).')
+      invalid.code = 'INVALID_ADDRESS'
       setState({
         status: 'error',
         data: null,
-        error: new Error('Enter a valid 42-character EVM address (0x…).'),
+        error: invalid,
       })
       return undefined
     }

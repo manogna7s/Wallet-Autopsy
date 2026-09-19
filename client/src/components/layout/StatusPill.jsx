@@ -22,7 +22,11 @@ export function StatusPill() {
     state.status === 'live' ? 'bg-accent' : state.status === 'warn' ? 'bg-medium' : 'bg-critical'
 
   return (
-    <div className="flex items-center gap-2 pl-1 text-[11px] tracking-[0.12em] text-quiet uppercase">
+    <div
+      className="flex items-center gap-2 pl-1 text-[11px] tracking-[0.12em] text-quiet uppercase"
+      role="status"
+      aria-live="polite"
+    >
       <span className={`h-1.5 w-1.5 rounded-full ${color} ${state.ok ? 'wa-status-dot' : ''}`} aria-hidden="true" />
       {state.label}
     </div>

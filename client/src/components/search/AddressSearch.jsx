@@ -66,6 +66,8 @@ export function AddressSearch({
           spellCheck="false"
           autoComplete="off"
           placeholder="Paste a wallet or contract address"
+          aria-invalid={Boolean(error)}
+          aria-describedby={error ? `${id}-error` : undefined}
           className={cn(
             'min-w-0 flex-1 bg-transparent px-4 py-3 text-ink placeholder:text-faint',
             large ? 'wa-mono text-[15px] md:text-base' : 'wa-mono text-sm',
@@ -92,7 +94,11 @@ export function AddressSearch({
         >
           {DEMO_ADDRESS.slice(0, 8)}…sample
         </button>
-        {error ? <span className="text-critical">{error}</span> : null}
+        {error ? (
+          <span id={`${id}-error`} className="text-critical" role="alert">
+            {error}
+          </span>
+        ) : null}
       </div>
     </form>
   )

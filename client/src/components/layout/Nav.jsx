@@ -10,7 +10,7 @@ const links = [
 
 export function NavLinks({ onNavigate, className }) {
   return (
-    <div className={cn('flex flex-col gap-1 md:flex-row md:items-center md:gap-7', className)}>
+    <div className={cn('flex flex-col gap-1 lg:flex-row lg:items-center lg:gap-7', className)}>
       {links.map((link) => (
         <NavLink
           key={link.to}
@@ -19,8 +19,8 @@ export function NavLinks({ onNavigate, className }) {
           onClick={onNavigate}
           className={({ isActive }) =>
             cn(
-              'py-2 text-[13px] tracking-wide text-quiet transition hover:text-ink',
-              isActive && 'text-ink',
+              'border-b border-transparent py-2 text-[13px] tracking-wide text-quiet transition hover:text-ink',
+              isActive && 'border-accent text-ink',
             )
           }
         >

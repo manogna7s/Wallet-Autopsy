@@ -67,19 +67,66 @@ function presentRisk(risk) {
   }
 }
 
-function buildPreview(transactions, signals) {
-  const approval = signals.find((row) => row.type === 'unlimited_token_approval' || row.type === 'permission_exposure_risk')
-  const row = transactions.find((item) => item.transactionType === 'approval')
-  if (!approval && !row) return null
+function compactLedger(transactions) {
+  return transactions.map((row) => ({
+    hash: row.hash,
+    timestamp: row.timestamp,
+    from: row.from,
+    to: row.to,
+    value: row.value,
+    token: row.token,
+    tokenAddress: row.tokenAddress,
+    transactionType: row.transactionType,
+    contractInteraction: row.contractInteraction,
+    method: row.method,
+    status: row.status,
+    unlimited: row.unlimited,
+    spender: row.spender,
+    uniqueId: row.uniqueId,
+  }))
+}
+
+function inspectableRows(transactions, signals) {
+  const hashes = new Set(
+    (signals || []).flatMap((signal) => signal.affectedTransactions || []).map((hash) => String(hash).toLowerCase()),
+  )
+  const ranked = transactions.map((row, index) => {
+    let rank = 0
+    if (row.transactionType === 'approval' && row.unlimited) rank += 120
+    else if (row.transactionType === 'approval' || row.method === 'approve') rank += 90
+    if (row.hash && hashes.has(String(row.hash).toLowerCase())) rank += 40
+    return { row, index, rank }
+  })
+  ranked.sort(
+    (a, b) => b.rank - a.rank || String(b.row.timestamp || '').localeCompare(String(a.row.timestamp || '')),
+  )
+  const picked = []
+  const seen = new Set()
+  for (const item of ranked) {
+    const key = item.row.hash || item.row.uniqueId || `i-${item.index}`
+    if (seen.has(key)) continue
+    seen.add(key)
+    picked.push(item.row)
+    if (picked.length >= 12) break
+  }
+  return picked
+}
+
+function presentAi(ai) {
+  if (!ai) return null
   return {
-    action: 'approve',
-    transaction: 'ERC-20 approve',
-    token: row?.token || 'Unknown token',
-    tokenAddress: row?.tokenAddress,
-    spender: row?.spender || row?.to,
-    spenderLabel: row?.spender || row?.to,
-    allowance: row?.unlimited ? 'Unlimited' : row?.value || 'Finite',
-    signals: [approval?.title || (row?.unlimited ? 'Unlimited allowance' : 'Token approval')].filter(Boolean),
+    source: ai.source,
+    fallbackReason: ai.fallbackReason || null,
+    generatedFrom: ai.generatedFrom || 'verified on-chain findings',
+    explainer: ai.explainer,
+    summary: ai.summary,
+    keyFindings: ai.keyFindings || ai.findings || [],
+    findings: ai.findings || ai.keyFindings || [],
+    evidenceExplanation: ai.evidenceExplanation || [],
+    whyItMatters: ai.whyItMatters || [],
+    potentialExposure: ai.potentialExposure || [],
+    whatToCheck: ai.whatToCheck || [],
+    uncertainty: ai.uncertainty || '',
   }
 }
 
@@ -94,7 +141,15 @@ export function presentInvestigation(payload) {
   const riskPath = buildRiskPath({ subject, signals, graph })
   const forensic = buildForensicSummary(signals, graph)
 
+  const ledger = compactLedger(transactions)
+  const inspectable = inspectableRows(ledger, signals)
+
   return {
+    id: payload.id,
+    persisted: Boolean(payload.persisted || payload.id),
+    source: payload.source || 'live',
+    investigatedAt: payload.investigatedAt,
+    ai: presentAi(payload.ai),
     address: payload.address,
     network: payload.chain,
     networkLabel: payload.chainLabel || 'Ethereum',
@@ -114,7 +169,9 @@ export function presentInvestigation(payload) {
     forensic,
     signals,
     risk,
-    preview: buildPreview(transactions, signals),
+    ledger,
+    inspectable,
+    defaultInspectHash: inspectable[0]?.hash || inspectable[0]?.uniqueId || null,
     empty: Boolean(payload.activity?.empty),
     notices: payload.notices || [],
     truncated: Boolean(payload.truncated),

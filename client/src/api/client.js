@@ -4,7 +4,7 @@ export async function request(path, options = {}) {
   const headers = { ...(options.body ? { 'Content-Type': 'application/json' } : {}), ...options.headers }
   let res
   try {
-    res = await fetch(`${BASE}${path}`, { ...options, headers })
+    res = await fetch(`${BASE}${path}`, { credentials: 'include', ...options, headers })
   } catch {
     const error = new Error('Cannot reach the investigation API. Is the server running?')
     error.status = 0
@@ -45,4 +45,48 @@ export function analyzeRisk(payload) {
     method: 'POST',
     body: JSON.stringify(payload),
   })
+}
+
+export function explainInvestigation(payload) {
+  return request('/api/ai/investigate', {
+    method: 'POST',
+    body: JSON.stringify(payload),
+  })
+}
+
+export function previewTransaction(payload) {
+  return request('/api/preview/transaction', {
+    method: 'POST',
+    body: JSON.stringify(payload),
+  })
+}
+
+export function explainTransactionPreview(payload) {
+  return request('/api/preview/explain', {
+    method: 'POST',
+    body: JSON.stringify(payload),
+  })
+}
+
+export function listHistory() {
+  return request('/api/history')
+}
+
+export function getSavedInvestigation(id) {
+  return request(`/api/history/${encodeURIComponent(id)}`)
+}
+
+export function listWatchlist() {
+  return request('/api/watchlist')
+}
+
+export function addWatchlist(payload) {
+  return request('/api/watchlist', {
+    method: 'POST',
+    body: JSON.stringify(payload),
+  })
+}
+
+export function deleteWatchlist(id) {
+  return request(`/api/watchlist/${encodeURIComponent(id)}`, { method: 'DELETE' })
 }
